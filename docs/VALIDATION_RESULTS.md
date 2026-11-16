@@ -16,7 +16,7 @@ Environment: Windows, Python 3.13.9, Docker Desktop 29.1.5, kubectl 1.34.1
 | GitHub Actions syntax | **PASSED** | Both updated workflows passed actionlint 1.7.7 with shellcheck integration. |
 | Trivy image scan | **PASSED** | Trivy 0.76.2 completed against the remediated image: 0 unsuppressed HIGH/CRITICAL OS findings and 0 unsuppressed HIGH/CRITICAL Python findings. The scan initially found patched zlib, Starlette, and setuptools issues; dependencies and OS packages were updated. One exact CVE is documented in `.trivyignore` because Trivy reports a deleted base layer with no `PkgPath`; direct final-filesystem inspection found only fixed setuptools 84.2.1. |
 | Kind cluster and smoke tests | **NOT RUN** | Kind was not installed locally. No local cluster deployment result is claimed. |
-| GitHub Actions | **PENDING RE-RUN** | Earlier runs stopped in `Set up job` before checkout or project commands. The workflows were simplified to avoid third-party setup actions and duplicate branch runs; the next PR run must provide the authoritative GitHub result. |
+| GitHub Actions | **PASSED** | PR run `43823998793` completed successfully for commit `49b2d65`: setup, checkout, dependency install, pytest, Docker build, Trivy, Helm install/lint/template, Kubeconform install/validation, and cleanup all passed. Earlier setup and vulnerability failures were fixed rather than hidden. |
 
 No cloud infrastructure was created, no image was published, no credentials were used, and no paid service was invoked.
 

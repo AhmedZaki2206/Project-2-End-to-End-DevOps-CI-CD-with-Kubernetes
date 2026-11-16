@@ -1,0 +1,7 @@
+apiVersion: v2
+name: cloud-native-api
+description: A learning-focused FastAPI deployment for a local Kubernetes platform
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+

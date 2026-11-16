@@ -1,0 +1,36 @@
+replicaCount: 2
+
+image:
+  repository: cloud-native-cicd-kubernetes
+  tag: local
+  pullPolicy: IfNotPresent
+
+namespace:
+  create: false
+  name: cloud-native-demo
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8000
+
+config:
+  logLevel: INFO
+  appReady: "true"
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 250m
+    memory: 256Mi
+
+probes:
+  liveness:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+  readiness:
+    initialDelaySeconds: 3
+    periodSeconds: 5
+

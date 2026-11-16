@@ -123,7 +123,7 @@ maxSurge: 1
 3. install `requirements-dev.txt`.
 4. `pytest` مع coverage threshold 90% من `pyproject.toml`.
 5. Docker build باستخدام commit SHA كـ `APP_VERSION`.
-6. Trivy scan للصورة، ويفشل مع fixed `HIGH` أو `CRITICAL` findings.
+6. Trivy 0.76.2 scan للصورة، ويفشل مع fixed `HIGH` أو `CRITICAL` findings. ملف `.trivyignore` يحتوي exception واحدة موثقة لطبقة `setuptools` محذوفة من base image.
 7. تنزيل Helm 3.16.3، ثم lint وtemplate.
 8. تنزيل Kubeconform 0.6.7، ثم validation للـ raw والـ rendered manifests.
 
@@ -150,7 +150,7 @@ ghcr.io/ahmedzaki2206/project-2-end-to-end-devops-ci-cd-with-kubernetes:sha-<ful
 | ClusterIP only | Service | مفيش external ingress؛ العرض المحلي يحتاج port-forward |
 | CPU/memory limits | 50m/64Mi requests، 250m/256Mi limits | limits صغيرة ومناسبة للديمو فقط، ولازم قياس قبل production |
 | No secrets | لا يوجد Secret object | مناسب لأن التطبيق لا يستخدم credentials؛ ConfigMap مش مكان للأسرار |
-| Pinned tool versions | Helm 3.16.3 وKubeconform 0.6.7 وTrivy 0.58.1 | pinning يحسن reproducibility لكنه يتطلب تحديث دوري |
+| Pinned tool versions | Helm 3.16.3 وKubeconform 0.6.7 وTrivy 0.76.2 | pinning يحسن reproducibility لكنه يتطلب تحديث دوري |
 
 قيود مهمة: المشروع local learning portfolio، مفيهوش TLS/Ingress/NetworkPolicy/PodDisruptionBudget/autoscaling/persistent storage أو production observability. الـ Kind cluster مش production Kubernetes، والـ host port 8080 في `kind-config.yaml` غير موصول حاليًا بأي NodePort.
 

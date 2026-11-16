@@ -41,7 +41,9 @@ jobs:
         run: |
           docker run --rm \
             --volume /var/run/docker.sock:/var/run/docker.sock \
-            aquasec/trivy:0.58.1 image \
+            --volume "${GITHUB_WORKSPACE}/.trivyignore:/.trivyignore:ro" \
+            aquasec/trivy:0.76.2 image \
+            --ignorefile /.trivyignore \
             --exit-code 1 --ignore-unfixed --severity HIGH,CRITICAL \
             "${IMAGE_NAME}:sha-${GITHUB_SHA}"
 

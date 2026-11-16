@@ -148,7 +148,7 @@ I can demonstrate failure handling by setting readiness false, using a missing i
 
 **Short answer:** يفحص image vulnerabilities.
 
-**التفصيل:** CI يستخدم image version 0.58.1 ويفشل على fixed HIGH/CRITICAL findings مع `--ignore-unfixed`. هو control واحد، مش security guarantee كاملة.
+**التفصيل:** CI يستخدم image version 0.76.2 ويفشل على fixed HIGH/CRITICAL findings مع `--ignore-unfixed`. فيه exception واحدة موثقة لنسخة `setuptools` محذوفة من base layer؛ الـ final filesystem فيه النسخة الآمنة 84.2.1. هو control واحد، مش security guarantee كاملة.
 
 **Sample English Answer:** “Trivy scans the built image and fails CI for high or critical vulnerabilities that have fixes available.”
 

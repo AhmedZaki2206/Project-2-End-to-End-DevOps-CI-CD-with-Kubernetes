@@ -1,0 +1,5 @@
+# The python:3.12-slim base image removes setuptools 70.3.0 in a later layer.
+# Trivy reports that deleted layer with no PkgPath. The final filesystem contains
+# only /opt/venv setuptools 84.2.1, which is newer than the fixed version 78.1.1.
+# Verified with Trivy 0.76.2 and direct inspection on 2026-11-16.
+CVE-2025-47273

@@ -7,7 +7,7 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
 WORKDIR /build
 COPY requirements.txt .
 RUN python -m venv /opt/venv \
-    && /opt/venv/bin/pip install --upgrade pip \
+    && /opt/venv/bin/pip install --upgrade pip setuptools \
     && /opt/venv/bin/pip install --requirement requirements.txt
 
 FROM python:3.12-slim AS runtime
@@ -19,7 +19,10 @@ ENV PATH="/opt/venv/bin:$PATH" \
     APP_VERSION=${APP_VERSION} \
     PORT=8000
 
-RUN groupadd --system --gid 10001 app \
+RUN apt-get update \
+    && apt-get upgrade --yes \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd --system --gid 10001 app \
     && useradd --system --uid 10001 --gid app --home-dir /app --shell /usr/sbin/nologin app
 
 WORKDIR /app

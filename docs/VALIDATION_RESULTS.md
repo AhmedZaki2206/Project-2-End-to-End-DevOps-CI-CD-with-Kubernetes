@@ -16,7 +16,7 @@ Environment: Windows, Python 3.13.9, Docker Desktop 29.1.5, kubectl 1.34.1
 | GitHub Actions syntax | **PASSED** | Both workflows passed actionlint 1.7.7 with shellcheck integration. |
 | Trivy image scan | **NOT RUN** | Trivy 0.58.1 started, but the 134 MiB vulnerability database did not finish downloading within the available local execution window. No vulnerability pass result is claimed; CI remains configured to run a blocking scan. |
 | Kind cluster and smoke tests | **NOT RUN** | Kind was not installed locally. No local cluster deployment result is claimed. |
-| GitHub Actions | **NOT RUN** | Pending branch push and pull request creation. |
+| GitHub Actions | **FAILED** | Two branch runs stopped in `Set up job` with 0 ms billable runner time before checkout or any project command. Local actionlint passed, so the repository/account Actions policy or runner availability must be corrected by the owner; application checks did not execute on GitHub. |
 
 No cloud infrastructure was created, no image was published, no credentials were used, and no paid service was invoked.
 

@@ -56,11 +56,17 @@ jobs:
           helm lint helm/cloud-native-api --strict
           helm template cloud-native helm/cloud-native-api --namespace cloud-native-demo > rendered.yaml
 
+      - name: Install Kubeconform
+        shell: bash
+        run: |
+          curl --fail --silent --show-error --location \
+            --output /tmp/kubeconform.tar.gz \
+            https://github.com/yannh/kubeconform/releases/download/v0.6.7/kubeconform-linux-amd64.tar.gz
+          tar -xzf /tmp/kubeconform.tar.gz -C /tmp kubeconform
+          sudo install /tmp/kubeconform /usr/local/bin/kubeconform
+
       - name: Run Kubeconform
-        uses: docker://ghcr.io/yannh/kubeconform:v0.6.7
-        with:
-          entrypoint: /kubeconform
-          args: -strict -summary -ignore-missing-schemas k8s rendered.yaml
+        run: kubeconform -strict -summary -ignore-missing-schemas k8s rendered.yaml
 
       - name: Log in to GHCR
         uses: docker/login-action@v3

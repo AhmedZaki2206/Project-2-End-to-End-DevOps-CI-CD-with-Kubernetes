@@ -1,0 +1,73 @@
+name: Pull Request CI
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Test, build, scan, and validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install --requirement requirements-dev.txt
+
+      - name: Run pytest
+        run: pytest
+
+      - name: Build Docker image
+        run: docker build --build-arg "APP_VERSION=${GITHUB_SHA}" --tag "cloud-native-cicd-kubernetes:${GITHUB_SHA}" .
+
+      - name: Scan image with Trivy
+        run: |
+          docker run --rm \
+            --volume /var/run/docker.sock:/var/run/docker.sock \
+            --volume "${GITHUB_WORKSPACE}/.trivyignore:/.trivyignore:ro" \
+            aquasec/trivy:0.76.2 image \
+            --ignorefile /.trivyignore \
+            --exit-code 1 --ignore-unfixed --severity HIGH,CRITICAL \
+            "cloud-native-cicd-kubernetes:${GITHUB_SHA}"
+
+      - name: Install Helm
+        shell: bash
+        run: |
+          curl --fail --silent --show-error --location \
+            --output /tmp/helm.tar.gz \
+            https://get.helm.sh/helm-v3.16.3-linux-amd64.tar.gz
+          tar -xzf /tmp/helm.tar.gz -C /tmp
+          sudo install /tmp/linux-amd64/helm /usr/local/bin/helm
+
+      - name: Helm lint
+        run: helm lint helm/cloud-native-api --strict
+
+      - name: Helm template
+        run: helm template cloud-native helm/cloud-native-api --namespace cloud-native-demo > rendered.yaml
+
+      - name: Install Kubeconform
+        shell: bash
+        run: |
+          curl --fail --silent --show-error --location \
+            --output /tmp/kubeconform.tar.gz \
+            https://github.com/yannh/kubeconform/releases/download/v0.6.7/kubeconform-linux-amd64.tar.gz
+          tar -xzf /tmp/kubeconform.tar.gz -C /tmp kubeconform
+          sudo install /tmp/kubeconform /usr/local/bin/kubeconform
+
+      - name: Validate Kubernetes manifests
+        run: kubeconform -strict -summary -ignore-missing-schemas k8s rendered.yaml
+

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloud-native-api-config
+  namespace: cloud-native-demo
+  labels:
+    app.kubernetes.io/name: cloud-native-api
+data:
+  LOG_LEVEL: INFO
+  APP_READY: "true"
+
